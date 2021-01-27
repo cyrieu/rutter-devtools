@@ -1,10 +1,14 @@
 .container {
-  min-height: 100vh;
-  padding: 0 0.5rem;
+  padding: 2rem 0rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.subtitle {
+  font-size: 1rem;
+  font-weight: normal;
 }
 
 .main {

@@ -11,18 +11,20 @@ const PUBLIC_KEY =
 
 export default function Home() {
   const [dataFetched, setDataFetched] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [connectLoading, setConnectLoading] = React.useState(false);
+  const [dataLoading, setDataLoading] = React.useState(false);
   const [accessToken, setAccessToken] = React.useState("");
   const [rutterConnected, setRutterConnected] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [generatedData, setGeneratedData] = React.useState({});
+  const [dataErrorMessage, setDataErrorMessage] = React.useState("");
+  const [generatedData, setGeneratedData] = React.useState(null);
 
   const config = {
     publicKey: PUBLIC_KEY,
     onSuccess: (publicToken) => {
       // We call our NextJS backend API in pages/api/rutter.js
       // It exchanges the publicToken for an access_token and makes an API call to /orders/get
-      setLoading(true);
+      setConnectLoading(true);
       axios
         // Calls handler method in pages/api/rutter.js
         .post("/api/rutter-exchange", {
@@ -37,49 +39,48 @@ export default function Home() {
           console.error(e);
         })
         .finally(() => {
-          setLoading(false);
+          setConnectLoading(false);
         });
     },
   };
   const { open, ready, error } = useRutterLink(config);
 
-  const handleGenerateData = async () => {
-    setLoading(true);
+  const handleGenerateProducts = async () => {
+    setDataLoading(true);
     try {
-      const result = await axios.post("/api/rutter-generate", {
+      const result = await axios.post("/api/rutter-generate-products", {
         accessToken: accessToken,
       });
       const {
-        data: { products, orders },
+        data: { products },
       } = result;
-      setGeneratedData(result.data);
+      setGeneratedData(products);
     } catch (e) {
       console.error(e);
-      setErrorMessage(e.message);
+      setDataErrorMessage(e.message);
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
-  if (loading && !rutterConnected) {
-    return (
-      <div>
-        <Spinner animation="border"></Spinner>
-      </div>
-    );
-  }
-
-  if (rutterConnected) {
-    // Show Endpoints and actions
-    return (
-      <div className={styles.main}>
-        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-        <h1>Generate Sample Data</h1>
-        <Button onClick={handleGenerateData}>Generate data now</Button>
-        {loading && <Spinner animation="border"></Spinner>}
-      </div>
-    );
-  }
+  const handleGenerateOrders = async (useExistingProducts) => {
+    setDataLoading(true);
+    try {
+      const result = await axios.post("/api/rutter-generate-orders", {
+        accessToken: accessToken,
+        useExistingProducts,
+      });
+      const {
+        data: { orders },
+      } = result;
+      setGeneratedData(orders);
+    } catch (e) {
+      console.error(e);
+      setDataErrorMessage(e.message);
+    } finally {
+      setDataLoading(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -87,21 +88,100 @@ export default function Home() {
         <title>Rutter Devtools</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to Seeding tool</h1>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          className={styles.description}
-        >
-          <div></div>
-          <Button style={{ marginTop: 4 }} onClick={() => open()}>
-            Connect to your Store
-          </Button>
+      <main>
+        <h1>Rutter Devtools</h1>
+        <div className={styles.subtitle}>
+          Rutter has open-sourced some utilities that help Ecommerce developers
+          build faster. You can quickly seed a test Ecommerce store with
+          realistic products & orders data.{" "}
+          <b>
+            Note: This app is meant to be used with development stores only.
+          </b>
         </div>
+        <div style={{ marginTop: 4 }}>
+          <a href="https://github.com/cyrieu/rutter-devtools" target="_blank">
+            View this app's source code here.
+          </a>
+        </div>
+        <hr />
+        <div>
+          <div style={{ fontWeight: 500, fontSize: "1.5rem" }}>
+            Connect your Ecommerce store
+          </div>
+          {rutterConnected ? (
+            <Alert style={{ marginTop: 4 }} variant="success">
+              Store connected.
+            </Alert>
+          ) : (
+            <Button
+              disabled={connectLoading}
+              variant="success"
+              size="sm"
+              style={{ marginTop: 8 }}
+              onClick={() => open()}
+            >
+              {connectLoading ? "Connecting..." : "Connect"}
+            </Button>
+          )}
+        </div>
+        {rutterConnected && (
+          <div>
+            <hr />
+            <div style={{ fontWeight: 500, fontSize: "1.5rem" }}>
+              Generate Test Data
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", marginTop: 4 }}>
+              <Button
+                size="sm"
+                style={{ marginRight: 4 }}
+                onClick={handleGenerateProducts}
+                disabled={dataLoading}
+              >
+                Generate 10 Test Products
+              </Button>
+              <Button
+                size="sm"
+                style={{ marginRight: 4 }}
+                onClick={() => handleGenerateOrders(false)}
+                disabled={dataLoading}
+              >
+                Generate 10 Test Products & Orders
+              </Button>
+              <Button
+                size="sm"
+                style={{ marginRight: 4 }}
+                onClick={() => handleGenerateOrders(true)}
+                disabled={dataLoading}
+              >
+                Generate 10 Test Orders
+              </Button>
+            </div>
+          </div>
+        )}
+        {(dataLoading || generatedData) && (
+          <div>
+            <hr />
+            <div style={{ fontWeight: 500, fontSize: "1.5rem" }}>
+              Generated Data JSON
+            </div>
+            {dataLoading ? (
+              <Spinner animation="border"></Spinner>
+            ) : (
+              <div style={{ display: "flex", flexWrap: "wrap", marginTop: 4 }}>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={JSON.stringify(generatedData, null, 4)}
+                />
+              </div>
+            )}
+          </div>
+        )}
+        {dataErrorMessage && (
+          <Alert style={{ marginTop: 8 }} variant="danger">
+            {dataErrorMessage}
+          </Alert>
+        )}
       </main>
     </div>
   );
