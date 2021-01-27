@@ -15,6 +15,7 @@ export default function Home() {
   const [accessToken, setAccessToken] = React.useState("");
   const [rutterConnected, setRutterConnected] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [generatedData, setGeneratedData] = React.useState({});
 
   const config = {
     publicKey: PUBLIC_KEY,
@@ -29,7 +30,6 @@ export default function Home() {
         })
         .then((response) => {
           const { data } = response;
-          console.log(data);
           setAccessToken(data.accessToken);
           setRutterConnected(true);
         })
@@ -49,8 +49,12 @@ export default function Home() {
       const result = await axios.post("/api/rutter-generate", {
         accessToken: accessToken,
       });
-      console.log(result);
+      const {
+        data: { products, orders },
+      } = result;
+      setGeneratedData(result.data);
     } catch (e) {
+      console.error(e);
       setErrorMessage(e.message);
     } finally {
       setLoading(false);

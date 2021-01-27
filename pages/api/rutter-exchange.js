@@ -25,6 +25,7 @@ export default async (req, res) => {
       // Respond with the access-token
       res.statusCode = 200;
       res.json({
+        ...response.data,
         accessToken: access_token,
       });
     } catch (e) {
