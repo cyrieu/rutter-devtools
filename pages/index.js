@@ -5,6 +5,8 @@ import axios from "axios";
 import React from "react";
 import { Button, Spinner, Table, Form } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
+import qs from "qs";
+import { useRouter } from "next/router";
 
 const PUBLIC_KEY =
   process.env.NEXT_PUBLIC_RUTTER_PUBLIC_KEY || "RUTTER_PUBLIC_KEY";
@@ -18,13 +20,13 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = React.useState("");
   const [dataErrorMessage, setDataErrorMessage] = React.useState("");
   const [generatedData, setGeneratedData] = React.useState(null);
+  const router = useRouter();
+  const { query } = router;
+  console.log(router);
 
-  const config = {
-    publicKey: PUBLIC_KEY,
-    onSuccess: (publicToken) => {
-      // We call our NextJS backend API in pages/api/rutter.js
-      // It exchanges the publicToken for an access_token and makes an API call to /orders/get
-      setConnectLoading(true);
+  const handleExchangeToken = async (publicToken) => {
+    setConnectLoading(true);
+    return (
       axios
         // Calls handler method in pages/api/rutter.js
         .post("/api/rutter-exchange", {
@@ -40,7 +42,23 @@ export default function Home() {
         })
         .finally(() => {
           setConnectLoading(false);
-        });
+        })
+    );
+  };
+
+  React.useEffect(() => {
+    if (query.public_token) {
+      // skip connect
+      handleExchangeToken(query.public_token);
+    }
+  }, []);
+
+  const config = {
+    publicKey: PUBLIC_KEY,
+    onSuccess: (publicToken) => {
+      // We call our NextJS backend API in pages/api/rutter.js
+      // It exchanges the publicToken for an access_token and makes an API call to /orders/get
+      handleExchangeToken(publicToken);
     },
   };
   const { open, ready, error } = useRutterLink(config);
