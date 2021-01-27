@@ -97,7 +97,7 @@ export default async (req, res) => {
             }
           })
         );
-        await sleep(3000);
+        await sleep(1000);
       }
       // generate orders
 
@@ -120,7 +120,7 @@ export default async (req, res) => {
             }
           })
         );
-        await sleep(3000);
+        await sleep(1000);
       }
 
       res.statusCode = 200;
