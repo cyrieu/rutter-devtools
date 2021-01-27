@@ -4,30 +4,10 @@ import { useRutterLink } from "react-rutter-link";
 import axios from "axios";
 import React from "react";
 import { Button, Spinner, Table, Form } from "react-bootstrap";
+import { Alert } from "react-bootstrap";
 
 const PUBLIC_KEY =
   process.env.NEXT_PUBLIC_RUTTER_PUBLIC_KEY || "RUTTER_PUBLIC_KEY";
-
-async function fetchOrders(accessToken) {
-  const result = await axios.post("/api/rutter-get-orders", {
-    accessToken,
-  });
-  return result;
-}
-
-async function fetchProducts(accessToken) {
-  const result = await axios.post("/api/rutter-get-products", {
-    accessToken,
-  });
-  return result;
-}
-
-async function fetchCustomers(accessToken) {
-  const result = await axios.post("/api/rutter-get-customers", {
-    accessToken,
-  });
-  return result;
-}
 
 export default function Home() {
   const [dataFetched, setDataFetched] = React.useState(null);
@@ -63,37 +43,13 @@ export default function Home() {
   };
   const { open, ready, error } = useRutterLink(config);
 
-  // Handler functions for API
-  const handleGetOrders = async () => {
-    setDataFetched(null);
+  const handleGenerateData = async () => {
     setLoading(true);
     try {
-      const orders = await fetchOrders(accessToken);
-      setDataFetched(orders);
-    } catch (e) {
-      setErrorMessage(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleGetProducts = async () => {
-    setDataFetched(null);
-    setLoading(true);
-    try {
-      const products = await fetchProducts(accessToken);
-      setDataFetched(products);
-    } catch (e) {
-      setErrorMessage(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleGetCustomers = async () => {
-    setDataFetched(null);
-    setLoading(true);
-    try {
-      const customers = await fetchCustomers(accessToken);
-      setDataFetched(customers);
+      const result = await axios.post("/api/rutter-generate", {
+        accessToken: accessToken,
+      });
+      console.log(result);
     } catch (e) {
       setErrorMessage(e.message);
     } finally {
@@ -113,55 +69,10 @@ export default function Home() {
     // Show Endpoints and actions
     return (
       <div className={styles.main}>
-        <div>Success! You have created a Rutter Connection.</div>
-        <div>access_token: {accessToken}</div>
-        <Table style={{ marginTop: 8 }} striped bordered hover>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Endpoint</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>GET</td>
-              <td>/orders</td>
-              <td>
-                <Button onClick={handleGetOrders}>Send request</Button>
-              </td>
-            </tr>
-            <tr>
-              <td>GET</td>
-              <td>/products</td>
-              <td>
-                <Button onClick={handleGetProducts}>Send request</Button>
-              </td>
-            </tr>
-            <tr>
-              <td>GET</td>
-              <td>/customers</td>
-              <td>
-                <Button onClick={handleGetCustomers}>Send request</Button>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-        {loading && (
-          <div>
-            <Spinner animation="border"></Spinner>
-          </div>
-        )}
-        {dataFetched != null && (
-          <div style={{ marginTop: 4 }}>
-            <Form.Control
-              as="textarea"
-              rows={40}
-              cols={80}
-              value={JSON.stringify(dataFetched, undefined, 4)}
-            />
-          </div>
-        )}
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+        <h1>Generate Sample Data</h1>
+        <Button onClick={handleGenerateData}>Generate data now</Button>
+        {loading && <Spinner animation="border"></Spinner>}
       </div>
     );
   }
@@ -169,13 +80,11 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Rutter React Quickstart</title>
+        <title>Rutter Devtools</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://rutterapi.com">Rutter!</a>
-        </h1>
+        <h1 className={styles.title}>Welcome to Seeding tool</h1>
         <div
           style={{
             display: "flex",
@@ -184,9 +93,9 @@ export default function Home() {
           }}
           className={styles.description}
         >
-          <div>Test out Rutter Link & API: </div>
+          <div></div>
           <Button style={{ marginTop: 4 }} onClick={() => open()}>
-            Connect with Rutter
+            Connect to your Store
           </Button>
         </div>
       </main>
