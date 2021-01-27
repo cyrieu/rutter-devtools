@@ -47,11 +47,12 @@ export default function Home() {
   };
 
   React.useEffect(() => {
+    console.log(query.public_token);
     if (query.public_token) {
       // skip connect
       handleExchangeToken(query.public_token);
     }
-  }, []);
+  }, [query]);
 
   const config = {
     publicKey: PUBLIC_KEY,
