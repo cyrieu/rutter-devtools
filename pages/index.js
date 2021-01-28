@@ -38,7 +38,7 @@ export default function Home() {
           setRutterConnected(true);
         })
         .catch((e) => {
-          console.error(e);
+          setErrorMessage(e?.response?.data?.error);
         })
         .finally(() => {
           setConnectLoading(false);
@@ -127,6 +127,11 @@ export default function Home() {
           <div style={{ fontWeight: 500, fontSize: "1.5rem" }}>
             Connect your Ecommerce store
           </div>
+          {errorMessage && (
+            <Alert style={{ marginTop: 4 }} variant="danger">
+              {errorMessage}
+            </Alert>
+          )}
           {rutterConnected ? (
             <Alert style={{ marginTop: 4 }} variant="success">
               Store connected.

@@ -30,8 +30,19 @@ export default async (req, res) => {
       });
     } catch (e) {
       console.error(e);
-      res.status(500).json({
-        error: e.message,
+      if (!e.response) {
+        return res.status(500).json({
+          error: "Could not fetch data",
+        });
+      }
+      const { data } = e.response;
+      if (e?.response?.data?.error_code === "INVALID_CREDENTIALS") {
+        return res.status(400).json({
+          error: "Invalid store credentials",
+        });
+      }
+      return res.status(500).json({
+        error: "Unknown error occurred",
       });
     }
   } else {
