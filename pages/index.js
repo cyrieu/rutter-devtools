@@ -90,7 +90,7 @@ export default function Home() {
     setDataLoading(true);
     try {
       const result = await axios.post("/api/rutter-simple-seed", {
-        accessToken: "3ac40537-b85b-4b8d-8a8c-81c89e5558f3", // accessToken,
+        accessToken: accessToken,
       });
       const { data } = result;
       setGeneratedData(data);
@@ -136,7 +136,7 @@ export default function Home() {
     setDataLoading(true);
     try {
       const result = await axios.post("/api/rutter-generate-orders", {
-        accessToken: "3ac40537-b85b-4b8d-8a8c-81c89e5558f3", // accessToken,
+        accessToken: accessToken,
         useExistingProducts,
       });
       const {
