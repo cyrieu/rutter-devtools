@@ -90,7 +90,7 @@ export default function Home() {
     setDataLoading(true);
     try {
       const result = await axios.post("/api/rutter-simple-seed", {
-        accessToken: accessToken,
+        accessToken: "3ac40537-b85b-4b8d-8a8c-81c89e5558f3", // accessToken,
       });
       const { data } = result;
       setGeneratedData(data);
@@ -166,14 +166,6 @@ export default function Home() {
           <b>
             Note: This app is meant to be used with development stores only.
           </b>
-          <button
-            onClick={async () => {
-              await handleGenerateOrders(true);
-            }}
-          >
-            {" "}
-            click me{" "}
-          </button>
         </div>
         <div style={{ marginTop: 4 }}>
           <a href="https://github.com/cyrieu/rutter-devtools" target="_blank">
