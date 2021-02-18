@@ -63,11 +63,28 @@ async function createFakeOrder(accessToken, generatedProducts) {
     const variant = product.variants[0];
     return {
       variant_id: variant.variant_id,
+      quantity: faker.random.number(10),
     };
   });
+  const state = faker.address.state(true);
+  const zipcode = faker.address.zipCodeByState(state);
   const fakeOrder = {
-    email: faker.internet.email(),
+    customer: {
+      email: faker.internet.email(),
+    },
+    billing_address: {
+      address1: faker.address.streetAddress(),
+      city: faker.address.city(),
+      postal_code: zipcode,
+      region: state,
+      country_code: "US",
+      first_name: faker.name.firstName(),
+      last_name: faker.name.lastName(),
+      phone: faker.phone(),
+      email: faker.internet.email(),
+    },
     line_items: selectedVariants,
+    currency_code: "USD",
   };
   const result = await axios.post(
     `https://${ENV_URL}/orders`,
