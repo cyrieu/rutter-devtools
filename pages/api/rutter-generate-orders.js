@@ -80,12 +80,15 @@ async function createFakeOrder(accessToken, generatedProducts) {
       country_code: "US",
       first_name: faker.name.firstName(),
       last_name: faker.name.lastName(),
-      phone: faker.phone(),
+      phone: faker.phone.phoneNumber(),
       email: faker.internet.email(),
     },
     line_items: selectedVariants,
     currency_code: "USD",
   };
+
+  console.log("SUBMITTING ORDER");
+  console.log(selectedVariants);
   const result = await axios.post(
     `https://${ENV_URL}/orders`,
     {

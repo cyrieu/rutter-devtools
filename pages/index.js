@@ -1,12 +1,17 @@
-import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import { useRutterLink } from "react-rutter-link";
 import axios from "axios";
-import React from "react";
-import { Button, Spinner, Table, Form } from "react-bootstrap";
-import { Alert, OverlayTrigger, Tooltip } from "react-bootstrap";
-import qs from "qs";
+import Head from "next/head";
 import { useRouter } from "next/router";
+import React from "react";
+import {
+  Alert,
+  Button,
+  Form,
+  OverlayTrigger,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
+import { useRutterLink } from "react-rutter-link";
+import styles from "../styles/Home.module.css";
 
 const PUBLIC_KEY =
   process.env.NEXT_PUBLIC_RUTTER_PUBLIC_KEY || "RUTTER_PUBLIC_KEY";
@@ -131,7 +136,7 @@ export default function Home() {
     setDataLoading(true);
     try {
       const result = await axios.post("/api/rutter-generate-orders", {
-        accessToken: accessToken,
+        accessToken: "3ac40537-b85b-4b8d-8a8c-81c89e5558f3", // accessToken,
         useExistingProducts,
       });
       const {
@@ -161,6 +166,14 @@ export default function Home() {
           <b>
             Note: This app is meant to be used with development stores only.
           </b>
+          <button
+            onClick={async () => {
+              await handleGenerateOrders(true);
+            }}
+          >
+            {" "}
+            click me{" "}
+          </button>
         </div>
         <div style={{ marginTop: 4 }}>
           <a href="https://github.com/cyrieu/rutter-devtools" target="_blank">
