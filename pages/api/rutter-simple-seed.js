@@ -1,7 +1,7 @@
 import axios from "axios";
 import faker from "faker";
-import { generateFakeDataset } from "../../backend/utils";
 import * as _ from "lodash";
+import { generateFakeDataset } from "../../backend/utils";
 
 const ENV_URL = process.env.RUTTER_URL || "sandbox.rutterapi.com";
 const CLIENT_ID = process.env.RUTTER_CLIENT_ID || "RUTTER_CLIENT_ID";
@@ -80,6 +80,9 @@ export default async (req, res) => {
         })
       );
 
+      console.log("GENERATED");
+      console.log(generatedProducts);
+
       const orderBatchSize = 10;
       const orderBatches = 1;
       let ordersToUse = _.take(orders, orderBatchSize);
@@ -101,10 +104,23 @@ export default async (req, res) => {
 
         const randCustomer =
           customers[Math.floor(Math.random() * customers.length)];
+        const state = faker.address.state(true);
+        const zipcode = faker.address.zipCodeByState(state);
         return {
-          ...order,
+          billing_address: {
+            address1: faker.address.streetAddress(),
+            city: faker.address.city(),
+            postal_code: zipcode,
+            region: state,
+            country_code: "US",
+            first_name: faker.name.firstName(),
+            last_name: faker.name.lastName(),
+            phone: faker.phone.phoneNumber(),
+            email: faker.internet.email(),
+          },
+          currency_code: "USD",
           line_items: fakeLineItems,
-          customer: Math.random() < 0.5 ? randCustomer : undefined,
+          customer: randCustomer,
         };
       });
 
