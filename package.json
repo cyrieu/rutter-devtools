@@ -18,7 +18,7 @@
     "react": "17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "17.0.1",
-    "react-rutter-link": "^1.0.2",
+    "react-rutter-link": "1.0.4",
     "uuid": "^8.3.2"
   }
 }

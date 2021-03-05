@@ -3191,10 +3191,10 @@ react-refresh@0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
-react-rutter-link@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-rutter-link/-/react-rutter-link-1.0.2.tgz#c7d566a2fb7565422c92a491b3cf7baba585aac3"
-  integrity sha512-o0ElaRUUbSWOkFkKWjn1oX0e5d/EoNnQN7nQD8dc2ovFEm/J40RReVDuen6Sp49Jsf9ZEObEAYlBbnulnUnDtw==
+react-rutter-link@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-rutter-link/-/react-rutter-link-1.0.4.tgz#0d8118f0a9fa600a736872200336be565f8f55a5"
+  integrity sha512-ZkCtScXAf82vHz2W8eFEq5FZ/dO9Ly7DCsx8Li006h6HkOtV2WZrQgZYPkYFvKFiPszfMp+dWY6vHyUrVK3LsA==
   dependencies:
     prop-types "^15.7.2"
     react-script-hook "1.1.0"
